@@ -82,8 +82,8 @@ export default function TaskList() {
         setVisibleTasks(visibleTasks)
     }
 
-    const addTask = newtask => {
-        if(!newtask.desc || !newTask.desc.trim()){
+    const addTask = newTask => {
+        if(!newTask.desc || !newTask.desc.trim()){
             Alert.alert('Dados inválidos', 'descrrição não informada!')
             return
         }
@@ -97,7 +97,7 @@ export default function TaskList() {
         })
 
         setTasks(tempTasks)
-        setShowAddTaske(false)
+        setShowAddTask(false)
     }
 
     return(

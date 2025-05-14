@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { 
-    View, 
+import {
+    View,
     Modal,
     TouchableWithoutFeedback,
     StyleSheet,
@@ -8,12 +8,12 @@ import {
     TextInput,
     TouchableOpacity,
     Platform
- } from "react-native"
- 
+} from "react-native"
+
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 
-export default function AddTask(props){
+export default function AddTask(props) {
 
     const [desc, setDesc] = useState("")
     const [date, setDate] = useState(new Date())
@@ -21,61 +21,65 @@ export default function AddTask(props){
 
     const handleDateChange = (event, selectedDate) => {
         setShowDatePicker(Platform.OS === 'ios')
-        if(selectedDate){
+        if (selectedDate) {
             setDate(selectedDate)
         }
     }
 
     const formattedDate = moment(date).format('ddd, D [de] MMMM [de] YYYY')
 
-    return(
+    return (
         <Modal transparent={true}
-            visible={props.isVisible} 
+            visible={props.isVisible}
             onRequestClose={props.onCancel}
             animationType="slide" >
 
-            <TouchableWithoutFeedback 
-                onPress={props.onCancel}>
+            <TouchableWithoutFeedback onPress={props.onCancel}>
                 <View style={styles.background}></View>
             </TouchableWithoutFeedback>
 
             <View style={styles.container}>
                 <Text style={styles.header}>Nova Tarefa</Text>
-                
-                <TextInput 
+
+                <TextInput
                     style={styles.input}
                     placeholder="Informe a descrição"
-                    onChange={setDesc}
+                    onChangeText={setDesc}
                     value={desc} />
 
                 {Platform.OS === 'android' && (
-                <View>
-                    <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                        <Text style={styles.date}>{formattedDate}</Text>
-                    </TouchableOpacity>
-                    {showDatePicker && (
-                        <DateTimePicker 
-                            value={date}
-                            mode="date"
-                            display="default"
-                            onChange={handleDateChange}
-                        />
-                    )}
-                </View>
+                    <View>
+                        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                            <Text style={styles.date}>{formattedDate}</Text>
+                        </TouchableOpacity>
+                        {showDatePicker && (
+                            <DateTimePicker
+                                value={date}
+                                mode="date"
+                                display="default"
+                                onChange={handleDateChange}
+                            />
+                        )}
+                    </View>
                 )}
 
                 <View style={styles.buttons}>
                     <TouchableOpacity onPress={props.onCancel}>
                         <Text style={styles.button}>Cancelar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={props.onSave({ desc, date })}>
+                    <TouchableOpacity onPress={() => {
+                        props.onSave({ desc, date })
+                        setDesc("")
+                        setDate(new Date())
+                    }
+                    }>
                         <Text style={styles.button}>Salvar</Text>
                     </TouchableOpacity>
                 </View>
 
             </View>
 
-            <TouchableWithoutFeedback 
+            <TouchableWithoutFeedback
                 onPress={props.onCancel} >
                 <View style={styles.background}></View>
             </TouchableWithoutFeedback>
@@ -85,7 +89,7 @@ export default function AddTask(props){
 }
 
 const styles = StyleSheet.create({
-    container : {
+    container: {
         backgroundColor: '#fff',
         flex: 1
     },
@@ -117,7 +121,7 @@ const styles = StyleSheet.create({
         marginRight: 30,
         color: '#b13b44'
     },
-    
+
     date: {
         marguin: 20,
         marginRight: 30,
