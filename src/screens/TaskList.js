@@ -4,6 +4,7 @@ import moment from 'moment-timezone'
 import 'moment/locale/pt-br'
 
 import Icon from 'react-native-vector-icons/FontAwesome'
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import todayImage from '../../assets/imgs/today.jpg'
 import Task from "../components/Task"
@@ -42,16 +43,33 @@ export default function TaskList() {
     const today = moment().tz("America/Sao_Paulo")
         .locale("pt-br").format('ddd, D [de] MMMM')
 
-    const [tasks, setTasks] = useState([...taskDB])
+    const [tasks, setTasks] = useState([])
 
     const [visibleTasks, setVisibleTasks] = useState([...tasks])
     const [showDoneTasks, setShowDoneTasks] = useState(true)
     const [showAddTask, setShowAddTask] = useState(false)
 
+    const[contador, setContador] = useState(0)
+
     useEffect(() => {
+        if(contador == 0){
+            getTasks()
+        }
+        setContador(contador +1)
         filterTasks()
 
-    }, [showDoneTasks, tasks])
+    }, [showDoneTasks])
+
+    useEffect(() => {
+        filterTasks()
+    },[ tasks])
+
+    async function getTasks() {
+        const tasksString = await AsyncStorage.getItem('tasksState')
+        const tasks = tasksString && JSON.parse(tasksString) || []
+        setTasks(tasks)
+        
+    }
 
     const toggleTask = (taskId) => {
         const taskList = [...visibleTasks]
@@ -97,11 +115,19 @@ export default function TaskList() {
 
         setTasks(tempTasks)
         setShowAddTask(false)
+
+        AsyncStorage.setItem('tasksState', JSON.stringify(tempTasks))
+
     }
 
     const deleteTask = id => {
         const tempTasks = tasks.filter(task => task.id !== id)
         setTasks(tempTasks)
+
+
+        AsyncStorage.setItem('tasksState', JSON.stringify(tempTasks))
+
+
     }
 
 
